@@ -4,7 +4,6 @@ import exceptions.ProductNotFoundException;
 import model.Order;
 import model.OrderStatus;
 import model.Product;
-import repositories.OrderMapRepo;
 import repositories.OrderRepo;
 import repositories.ProductRepo;
 
@@ -40,5 +39,14 @@ public class ShopService {
         return orderRepo.getOrders().stream()
                 .filter(order -> order.orderStatus().equals(orderStatus))
                 .toList();
+    }
+
+    public Order updateOrder(String orderId, OrderStatus orderStatus) {
+        Order oldOrder = orderRepo.getOrderById(orderId);
+        Order newOrder = oldOrder.withOrderStatus(orderStatus);
+
+        orderRepo.removeOrder(oldOrder.id());
+
+        return orderRepo.addOrder(newOrder);
     }
 }

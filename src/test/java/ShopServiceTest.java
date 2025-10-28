@@ -62,4 +62,18 @@ class ShopServiceTest {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    void updateOrder() {
+        OrderRepo orderRepo = new OrderMapRepo();
+        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING));
+        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY));
+        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING));
+        ShopService shopService = new ShopService(new ProductRepo(), orderRepo);
+
+        Order expected = new Order("2", List.of(), OrderStatus.COMPLETED);
+        Order actual = shopService.updateOrder("2", OrderStatus.COMPLETED);
+
+        assertEquals(expected, actual);
+    }
 }
