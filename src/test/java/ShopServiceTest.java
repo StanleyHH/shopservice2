@@ -12,13 +12,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShopServiceTest {
-    private ProductRepo productRepo = new ProductRepo();
-    private OrderRepo orderRepo = new OrderMapRepo();
 
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService(productRepo, orderRepo);
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         List<String> productsIds = List.of("1");
 
         //WHEN
@@ -33,7 +31,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest_whenInvalidProductId_expectNull() {
         //GIVEN
-        ShopService shopService = new ShopService(productRepo, orderRepo);
+        ShopService shopService = new ShopService(new ProductRepo(), new OrderMapRepo());
         List<String> productsIds = List.of("1", "2");
 
         //WHEN
@@ -45,6 +43,7 @@ class ShopServiceTest {
 
     @Test
     void getOrdersByOrderStatus_returnsOnlyOrdersWithRequestedStatus() {
+        OrderRepo orderRepo = new OrderMapRepo();
         orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING));
         orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY));
         orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING));
