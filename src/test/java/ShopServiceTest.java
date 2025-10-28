@@ -42,4 +42,27 @@ class ShopServiceTest {
         //THEN
         assertNull(actual);
     }
+
+    @Test
+    void getOrdersByOrderStatus_returnsOnlyOrdersWithRequestedStatus() {
+        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING));
+        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY));
+        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING));
+
+        List<Order> expected = List.of(
+                new Order("1", List.of(), OrderStatus.PROCESSING),
+                new Order("3", List.of(), OrderStatus.PROCESSING)
+        );
+
+        ShopService shopService = new ShopService(new ProductRepo(), orderRepo);
+
+        System.out.println(orderRepo.getOrders().stream()
+                .filter(order -> order.orderStatus().equals(OrderStatus.PROCESSING))
+                .toList());
+
+        List<Order> result = shopService.getOrdersByOrderStatus(OrderStatus.PROCESSING);
+        System.out.println(result);
+
+        assertEquals(expected, result);
+    }
 }
