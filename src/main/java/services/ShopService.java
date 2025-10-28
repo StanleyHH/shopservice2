@@ -12,8 +12,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class ShopService {
-    private ProductRepo productRepo = new ProductRepo();
-    private OrderRepo orderRepo = new OrderMapRepo();
+    private final ProductRepo productRepo;
+    private final OrderRepo orderRepo;
+
+    public ShopService(ProductRepo productRepo, OrderRepo orderRepo) {
+        this.productRepo = productRepo;
+        this.orderRepo = orderRepo;
+    }
 
     public Order addOrder(List<String> productIds) {
         List<Product> products = new ArrayList<>();
