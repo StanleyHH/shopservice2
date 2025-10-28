@@ -2,6 +2,9 @@ import model.Order;
 import model.OrderStatus;
 import model.Product;
 import org.junit.jupiter.api.Test;
+import repositories.OrderMapRepo;
+import repositories.OrderRepo;
+import repositories.ProductRepo;
 import services.ShopService;
 
 import java.util.List;
@@ -9,11 +12,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShopServiceTest {
+    private ProductRepo productRepo = new ProductRepo();
+    private OrderRepo orderRepo = new OrderMapRepo();
 
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
         List<String> productsIds = List.of("1");
 
         //WHEN
@@ -28,7 +33,7 @@ class ShopServiceTest {
     @Test
     void addOrderTest_whenInvalidProductId_expectNull() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
         List<String> productsIds = List.of("1", "2");
 
         //WHEN
