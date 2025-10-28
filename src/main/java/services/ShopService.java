@@ -1,3 +1,12 @@
+package services;
+
+import model.Order;
+import model.OrderStatus;
+import model.Product;
+import repositories.OrderMapRepo;
+import repositories.OrderRepo;
+import repositories.ProductRepo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +20,7 @@ public class ShopService {
         for (String productId : productIds) {
             Product productToOrder = productRepo.getProductById(productId);
             if (productToOrder == null) {
-                System.out.println("Product mit der Id: " + productId + " konnte nicht bestellt werden!");
+                System.out.println("model.Product mit der Id: " + productId + " konnte nicht bestellt werden!");
                 return null;
             }
             products.add(productToOrder);

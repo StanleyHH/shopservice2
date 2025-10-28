@@ -1,3 +1,7 @@
+package repositories;
+
+import model.Order;
+
 import java.util.List;
 
 public interface OrderRepo {
