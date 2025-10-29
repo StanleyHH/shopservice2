@@ -8,6 +8,7 @@ import repositories.OrderRepo;
 import repositories.ProductRepo;
 import services.ShopService;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +25,7 @@ class ShopServiceTest {
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING, Instant.now());
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
@@ -42,23 +43,18 @@ class ShopServiceTest {
     @Test
     void getOrdersByOrderStatus_returnsOnlyOrdersWithRequestedStatus() {
         OrderRepo orderRepo = new OrderMapRepo();
-        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING));
-        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY));
-        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING));
+        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING, Instant.MIN));
+        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY, Instant.MIN));
+        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING, Instant.MIN));
 
         List<Order> expected = List.of(
-                new Order("1", List.of(), OrderStatus.PROCESSING),
-                new Order("3", List.of(), OrderStatus.PROCESSING)
+                new Order("1", List.of(), OrderStatus.PROCESSING, Instant.MIN),
+                new Order("3", List.of(), OrderStatus.PROCESSING, Instant.MIN)
         );
 
         ShopService shopService = new ShopService(new ProductRepo(), orderRepo);
 
-        System.out.println(orderRepo.getOrders().stream()
-                .filter(order -> order.orderStatus().equals(OrderStatus.PROCESSING))
-                .toList());
-
         List<Order> result = shopService.getOrdersByOrderStatus(OrderStatus.PROCESSING);
-        System.out.println(result);
 
         assertEquals(expected, result);
     }
@@ -66,12 +62,12 @@ class ShopServiceTest {
     @Test
     void updateOrder() {
         OrderRepo orderRepo = new OrderMapRepo();
-        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING));
-        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY));
-        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING));
+        orderRepo.addOrder(new Order("1", List.of(), OrderStatus.PROCESSING, Instant.MIN));
+        orderRepo.addOrder(new Order("2", List.of(), OrderStatus.IN_DELIVERY, Instant.MIN));
+        orderRepo.addOrder(new Order("3", List.of(), OrderStatus.PROCESSING, Instant.MIN));
         ShopService shopService = new ShopService(new ProductRepo(), orderRepo);
 
-        Order expected = new Order("2", List.of(), OrderStatus.COMPLETED);
+        Order expected = new Order("2", List.of(), OrderStatus.COMPLETED, Instant.MIN);
         Order actual = shopService.updateOrder("2", OrderStatus.COMPLETED);
 
         assertEquals(expected, actual);
